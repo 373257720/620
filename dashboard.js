@@ -53,7 +53,10 @@ var infowindow = []; //信息墙
 // var driveLog = [];
 var locations = []; //车的位置信息
 var cardatas = {}; //channels数据
-
+var dingshi0=null;
+var dingshi1=null;
+var dingshi3=null;
+var dingshi4=null;
 var data_elapsed = document.getElementById('data_elapsed');
 var data_pid_value1 = document.getElementById('data_pid_value1');
 var data_recv = document.getElementById('data_recv');
@@ -74,15 +77,7 @@ carlists.onclick = function (e) {
         timegg(markers[e.target.getAttribute('myid')], infowindow)
     }
 }
-// clearInterval(timego)
-// var timego = setInterval(function () {
-//     for (var i = 0; i < cardatas.length; i++) {
-//         if (cardatas[i].stats.parked == 0) {
-//             cardatas[i].stats.elapsed = cardatas[i].stats.elapsed + 1000;
-//         }
 
-//     }
-// }, 1000)
 
 // 左边列表渲染
 function show(b) {
@@ -436,16 +431,19 @@ function carlist() {
 
         }
         // cardatas = JSON.parse(JSON.stringify(res.channels))
-        // console.log(cardatas);
+        console.log(cardatas);
         if (cardatas.length == 0) {
             alert("Not an active device. Please check if your device is working or the device ID is correct.");
         }
+
+        clearTimeout(dingshi3)
+        single0()
     }, function (err) {
         console.log(err)
     });
 }
 carlist();
-clearInterval(dashload)
+// clearInterval(dashload)
 // 总数据的定时器
 var dashload = setInterval(carlist, 10000);
 
@@ -454,10 +452,10 @@ var dashload = setInterval(carlist, 10000);
 // 1=havedata;
 // 2=parking;
 // 3=offline
-single0();
+
 
 function single0() {
-    // console.log('single1 hanshudangzh');
+    // console.log(cardatas);
     for (let key in cardatas) {
         (function (num) { //形参
             $.ajax({
@@ -466,16 +464,16 @@ function single0() {
                     type: 'get',
                     dataType: 'html'
                 })
-                .then(function (res) {
-                    console.log(res.stats);
-                    if (res.stats) {
+                .then(function (result) {
+                    var res = eval('(' + result + ')');
+                    // console.log(data.stats);
+                    if (res.stats.parked) {
                         var offline = res.stats.age.ping > DEVICE_OFFLINE_TIMEOUT
                         if (offline) {
-                            cardatas[i]['status'] = 3
+                            cardatas[key]['status'] = 3
                         } else if (!offline) {
-                            cardatas[i]['status'] = 2
+                            cardatas[key]['status'] = 2
                         }
-
                     } else if (!res.stats.parked) {
                         let uluru = {}
                         for (let j = 0; j < res.data.length; j++) {
@@ -488,19 +486,79 @@ function single0() {
                             }
                         }
                         if (uluru.lat && uluru.lng) {
-                            cardatas[i]['status'] = 0
+                            cardatas[key]['status'] = 0
                         } else {
-                            cardatas[i]['status'] = 1
+                            cardatas[key]['status'] = 1
                         }
                     }
-
-                }, function (err) {
-                    console.log(err)
+                    // console.log(cardatas[key])
+                    states(cardatas[key]);
                 });
         }(key))
     }
 
 }
+
+function single1(car) {
+    $.ajax({
+            async: true, //异步
+            url: serverURL + "/get/" + car.devid,
+            type: 'get',
+            dataType: 'html'
+        })
+        .then(function (result) {
+            var res = eval('(' + result + ')');
+            // console.log(data.stats);
+            if (res.stats.parked) {
+                var offline = res.stats.age.ping > DEVICE_OFFLINE_TIMEOUT
+                if (offline) {
+                    car['status'] = 3
+                } else if (!offline) {
+                    car['status'] = 2
+                }
+            } else if (!res.stats.parked) {
+                let uluru = {}
+                for (let j = 0; j < res.data.length; j++) {
+                    // console.log(brr[j][1])
+                    if (res.data[j][0] == 10) {
+                        uluru.lat = res.data[j][1]
+                    }
+                    if (brr.data[j][0] == 11) {
+                        uluru.lng = res.data[j][1]
+                    }
+                }
+                if (uluru.lat && uluru.lng) {
+                    car['status'] = 0
+                } else {
+                    car['status'] = 1
+                }
+            }
+            console.log(111)
+            states(car);
+        });
+
+}
+
+function states(car) {
+    if (car.status == 0) {
+    //   dingshi0=setTimeout(()=>{
+    //       console.log(car)
+    //     // single1(car)
+    //   },1000)  
+    } else if (car.status == 1) {
+        // single1(car)
+    } else if (car.status == 2) {
+        // single1(car)
+    } else if (car.status == 3) {
+
+        dinshiqi3=setTimeout(() => {
+            // console.log
+            single1(car);
+        }, 2000);
+    }
+}
+
+// var dashload0 = setInterval(single0, 5000);
 //实参
 // if (cardatas[i]['status'] == undefined || cardatas[i]['status'] == 0 || cardatas[i]['status'] == 1) {
 //     let xhr = new XMLHttpRequest();
@@ -548,31 +606,31 @@ function single0() {
 // single0();
 
 // 车的状态
-var dashload0 = setInterval(single0, 5000);
 
-function single1() {
-    // console.log('single1 hanshudangzh');
-    for (let i in cardatas) {
-        // console.log(cardatas);
-        if (cardatas[i]['status'] == 2) {
-            let xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (this.readyState != 4) return;
-                if (this.status != 200) {
-                    if (this.status) {
-                        // alert("Server under maintenance (status: " + this.status + ")");
-                    }
-                    return;
-                }
-                var res = JSON.parse(xhr.responseText)
-                console.log(res);
-            }
-            xhr.open('get', serverURL + "/get/" + cardatas[i].devid);
-            xhr.send();
-        }
-    }
-    console.log(1);
-}
+
+// function single1() {
+//     // console.log('single1 hanshudangzh');
+//     for (let i in cardatas) {
+//         // console.log(cardatas);
+//         if (cardatas[i]['status'] == 2) {
+//             let xhr = new XMLHttpRequest();
+//             xhr.onreadystatechange = function () {
+//                 if (this.readyState != 4) return;
+//                 if (this.status != 200) {
+//                     if (this.status) {
+//                         // alert("Server under maintenance (status: " + this.status + ")");
+//                     }
+//                     return;
+//                 }
+//                 var res = JSON.parse(xhr.responseText)
+//                 console.log(res);
+//             }
+//             xhr.open('get', serverURL + "/get/" + cardatas[i].devid);
+//             xhr.send();
+//         }
+//     }
+//     // console.log(1);
+// }
 // var dashload0 = setInterval(single1, 10000);
 
 function single2() {
