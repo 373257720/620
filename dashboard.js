@@ -311,9 +311,6 @@ function carlist() {
                 cardatas[arr1[i].devid] = arr1[i];
             }
         }
-        if (cardatas.length == 0) {
-            alert("Not an active device. Please check if your device is working or the device ID is correct.");
-        }
         html = '';
         for (let i in cardatas) {
             html += `<li>
@@ -467,8 +464,6 @@ function single0() {
                     })
                     .then(function (result) {
                         var res = eval('(' + result + ')');
-
-
                         let uluru = {}
                         for (let j = 0; j < res.data.length; j++) {
                             // console.log(brr[j][1])
@@ -578,9 +573,9 @@ function single1(car) {
                 }
             } else if (!res.stats.parked) {
                 if (uluru.lat && uluru.lng) {
-                    if (cardatas[car.devid].status != 0) {
+                    if (cardatas[car.devid].status != 0) {      
                         judgement(car.devid, 0)
-                    } else if (Math.abs(markers[car.devid].position.lat() - uluru.lat) > 0.001 || Math.abs(markers[car.devid].position.lng() - uluru.lng > 0.001)) {
+                    } else if (Math.abs(markers[car.devid].position.lat() - uluru.lat) > 0.001 || Math.abs(markers[car.devid].position.lng() - uluru.lng) > 0.001) {            
                         markers[car.devid].setMap(null)
                         spliceMarker({
                             lat: uluru.lat,
@@ -608,18 +603,18 @@ function single1(car) {
 // 3=offline
 function states(car) {
     if (car.status == 0 || car.status == 1) {
-        clearTimeout(dingshi0)
+        // clearTimeout(dingshi0)
         dingshi0 = setTimeout(() => {
             single1(car)
         }, 2000)
     } else if (car.status == 2) {
-        clearTimeout(dingshi2)
+        // clearTimeout(dingshi2)
         dingshi2 = setTimeout(() => {
             // console.log(2)   
             single1(car)
         }, 5000)
     } else if (car.status == 3) {
-        clearTimeout(dingshi3)
+        // clearTimeout(dingshi3)
         dinshiqi3 = setTimeout(() => {
             // console.log(3)
             single1(car);
