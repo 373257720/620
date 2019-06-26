@@ -53,10 +53,10 @@ var infowindow = []; //信息墙
 // var driveLog = [];
 var locations = []; //车的位置信息
 var cardatas = {}; //channels数据
-var dingshi0=null;
-var dingshi1=null;
-var dingshi3=null;
-var dingshi4=null;
+var dingshi0 = null;
+var dingshi1 = null;
+var dingshi3 = null;
+var dingshi4 = null;
 var data_elapsed = document.getElementById('data_elapsed');
 var data_pid_value1 = document.getElementById('data_pid_value1');
 var data_recv = document.getElementById('data_recv');
@@ -428,16 +428,15 @@ function carlist() {
             {
                 cardatas[arr1[i].devid] = arr1[i];
             }
-
         }
         // cardatas = JSON.parse(JSON.stringify(res.channels))
         console.log(cardatas);
         if (cardatas.length == 0) {
             alert("Not an active device. Please check if your device is working or the device ID is correct.");
         }
-
-        clearTimeout(dingshi3)
-        single0()
+        // clearTimeout(dingshi3)
+        clearTimeout(dingshi0)
+        single0();
     }, function (err) {
         console.log(err)
     });
@@ -481,7 +480,7 @@ function single0() {
                             if (res.data[j][0] == 10) {
                                 uluru.lat = res.data[j][1]
                             }
-                            if (brr.data[j][0] == 11) {
+                            if (res.data[j][0] == 11) {
                                 uluru.lng = res.data[j][1]
                             }
                         }
@@ -508,7 +507,6 @@ function single1(car) {
         })
         .then(function (result) {
             var res = eval('(' + result + ')');
-            // console.log(data.stats);
             if (res.stats.parked) {
                 var offline = res.stats.age.ping > DEVICE_OFFLINE_TIMEOUT
                 if (offline) {
@@ -523,7 +521,7 @@ function single1(car) {
                     if (res.data[j][0] == 10) {
                         uluru.lat = res.data[j][1]
                     }
-                    if (brr.data[j][0] == 11) {
+                    if (res.data[j][0] == 11) {
                         uluru.lng = res.data[j][1]
                     }
                 }
@@ -533,7 +531,7 @@ function single1(car) {
                     car['status'] = 1
                 }
             }
-            console.log(111)
+            console.log(car)
             states(car);
         });
 
@@ -541,20 +539,22 @@ function single1(car) {
 
 function states(car) {
     if (car.status == 0) {
-    //   dingshi0=setTimeout(()=>{
-    //       console.log(car)
-    //     // single1(car)
-    //   },1000)  
+        dingshi0 = setTimeout(()=> {
+            single1(car)
+        }, 2000);
     } else if (car.status == 1) {
         // single1(car)
+        //  dinshi1 = setTimeout(() => {
+        //     // console.log
+        //     single1(car);
+        // }, 2000);
     } else if (car.status == 2) {
         // single1(car)
     } else if (car.status == 3) {
-
-        dinshiqi3=setTimeout(() => {
-            // console.log
-            single1(car);
-        }, 2000);
+        // dinshiqi3 = setTimeout(() => {
+        //     // console.log
+        //     single1(car);
+        // }, 2000);
     }
 }
 
