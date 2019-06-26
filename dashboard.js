@@ -13,7 +13,69 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *******v***********************************************************************/
+
+// var map;
 onResize();
+// 地图初始化
+var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {
+        lat: 22.4,
+        lng: 114.15
+    },
+    // zoomControl: false,
+    // scaleControl: false
+});
+carlist();
+setMapOnAll(null);
+
+
+
+var ordinal = [17, 16, 287, 14, 260, 261, 266, 350, 272, 289, 305, 307, 36]
+var column = [
+    'China Date',
+    'China Time',
+    'Run time since engine start', //0x11f-287
+    'Course (degree)', //0xe-14
+    'Engine load', //0x104-260
+    'Engine coolant temperature', //105-261
+    'Fuel pressure', //0x10a-266
+    'Engine fuel rate', //0x15e-350
+    'MAF air flow rate', //0x110-272
+    'Distance traveled with malfunction indicator lamp', //0x121-289
+    'Distance traveled since codes cleared', //0x131-305
+    'Barometric pressure', //0x133-307
+    'Battery voltage (in 0.01V)', //0x24-36
+];
+
+
+var markers = {}; //坐标
+var infowindow = {}; //信息墙   
+// lineView = [],
+// routerLog = []; //记录点清除点
+// var driveLog = [];
+var cardatas = {}; //channels数据
+var dingshi0 = null; //汽车在开的定时器
+var dingshi2 = null; //parked的定时器
+var dingshi3 = null; //offline的定时器
+var data_elapsed = document.getElementById('data_elapsed');
+var data_pid_value1 = document.getElementById('data_pid_value1');
+var data_recv = document.getElementById('data_recv');
+var data_rate = document.getElementById('data_rate');
+var data_delay = document.getElementById('data_delay');
+var data_pid_value0 = document.getElementById('data_pid_value0');
+var carlists = document.getElementById('carlist')
+var shoufengqin = document.getElementsByClassName('open')[0]
+
+document.getElementsByClassName('open')[0].nextElementSibling.style.height = "0px"
+shoufengqin.onclick = function () {
+    xiala('open', document.getElementsByClassName('open')[0])
+}
+carlists.onclick = function (e) {
+    if (e.target.className == 'caritem') {
+        timegg(markers[e.target.getAttribute('myid')], infowindow)
+    }
+}
 
 function onResize() {
     var height = window.innerHeight - document.getElementById("list").offsetHeight - 8;
@@ -25,60 +87,13 @@ function onResize() {
     // document.getElementById("chart").style.height = height / 3 + "px";
     // document.getElementById("chart").style.width = width+ "px";
 }
-// var a=NaN-1
-// console.log(NaN>0.001)
-var map;
-var ordinal = [17, 16, 287, 14, 260, 261, 266, 350, 272, 289, 305, 307, 36]
-var column = [
-    'China Date',
-    'China Time',
-    'Run time since engine start',
-    'Course (degree)',
-    'Engine load',
-    'Engine coolant temperature',
-    'Fuel pressure',
-    'Engine fuel rate',
-    'MAF air flow rate',
-    'Distance traveled with malfunction indicator lamp',
-    'Distance traveled since codes cleared',
-    'Barometric pressure',
-    'Battery voltage (in 0.01V)',
-];
+if (window.require) {
+    const shell = require('electron').shell;
 
-
-var markers = {};
-var infowindow = {}; //信息墙   
-// var arr8=;
-// lineView = [],
-// routerLog = []; //记录点清除点
-// var driveLog = [];
-var locations = []; //车的位置信息
-var cardatas = {}; //channels数据
-var dingshi0 = null;
-var dingshi2 = null;
-var dingshi3 = null;
-var data_elapsed = document.getElementById('data_elapsed');
-var data_pid_value1 = document.getElementById('data_pid_value1');
-var data_recv = document.getElementById('data_recv');
-var data_rate = document.getElementById('data_rate');
-var data_delay = document.getElementById('data_delay');
-var data_pid_value0 = document.getElementById('data_pid_value0');
-var carlists = document.getElementById('carlist')
-var shoufengqin = document.getElementsByClassName('open')[0]
-
-
-document.getElementsByClassName('open')[0].nextElementSibling.style.height = "0px"
-shoufengqin.onclick = function () {
-    // console.log(shoufengqin);
-    xiala('open', document.getElementsByClassName('open')[0])
-}
-carlists.onclick = function (e) {
-    if (e.target.className == 'caritem') {
-        timegg(markers[e.target.getAttribute('myid')], infowindow)
+    function openLink(url) {
+        shell.openExternal(url);
     }
 }
-
-
 // 左边列表渲染
 function show(b) {
     var res = b.map(function (item) {
@@ -92,65 +107,46 @@ function show(b) {
     $('#tools').html(res);
     // console.log($('#tool'))
 }
-// 汽车列表
-function showme(b) {
-    var res = b.map(function (item, idx) {
-        return `<li>
-                    <p class="caritem" myid=${idx} itemname=${item}>${item.devid}</p>              
-                </li>`;
-    }).join("");
-    $('#carlist').html(res);
-    // console.log($('#tool'))
+show(column);
+infomation = document.getElementsByClassName('infomation')
+// console.log();
+
+function getLocalTime(i) {
+    //参数i为时区值数字，比如北京为东八区则输进8,西5输入-5
+    if (typeof i !== 'number') return;
+    var d = new Date();
+    //得到1970年一月一日到现在的秒数
+    var len = d.getTime();
+    //本地时间与GMT时间的时间偏移差
+    var offset = d.getTimezoneOffset() * 60000;
+    //得到现在的格林尼治时间
+    var utcTime = len + offset;
+    return new Date(utcTime + 3600000 * i);
 }
+clearInterval(go)
+var go = setInterval(NowTime1, 1000)
 
-function initMap() {
-    // var directionsService = new google.maps.DirectionsService;
-    // var directionsDisplay = new google.maps.DirectionsRenderer;
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 11,
-        center: {
-            lat: 22.4,
-            lng: 114.15
-        },
-        // zoomControl: false,
-        // scaleControl: false
-    });
-    // google.maps.event.addListener(map, 'zoom_changed', function () {
-    //     // console.log(111)
-    //     if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);
-    // });
-    // directionsDisplay.setMap(map);
-    show(column);
-    infomation = document.getElementsByClassName('infomation')
-    clearInterval(go)
-    var go = setInterval(NowTime, 1000)
-
-    function NowTime() {
-        var time = new Date();
-        var year = time.getFullYear(); //获取年
-        var month = time.getMonth() + 1; //或者月
-        var day = time.getDate(); //或者天
-        var hour = time.getHours(); //获取小时
-        var minu = time.getMinutes(); //获取分钟
-        var second = time.getSeconds(); //或者秒
-        month = month < 10 ? '0' + month : month;
-        day = day < 10 ? '0' + day : day;
-        var data = year + "-" + month + '-' + day;
-        hour = hour < 10 ? '0' + hour : hour;
-        minu = minu < 10 ? '0' + minu : minu;
-        second = second < 10 ? '0' + second : second;
-        var time = hour + ":" + minu + ":" + second;
-        infomation[0].innerText = data
-        infomation[1].innerText = time
-    }
-    //实时位置
-    setMapOnAll(null);
-    // dashload();
-
-    // google.maps.event.addDomListener(infomation[0], 'click', function(){console.log(999)});
+function NowTime1() {
+    var time = getLocalTime(8);
+    var year = time.getFullYear(); //获取年
+    var month = time.getMonth() + 1; //或者月
+    var day = time.getDate(); //或者天
+    var hour = time.getHours(); //获取小时
+    var minu = time.getMinutes(); //获取分钟
+    var second = time.getSeconds(); //或者秒
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+    var data = year + "-" + month + '-' + day;
+    hour = hour < 10 ? '0' + hour : hour;
+    minu = minu < 10 ? '0' + minu : minu;
+    second = second < 10 ? '0' + second : second;
+    var time1 = hour + ":" + minu + ":" + second;
+    infomation[0].innerText = data;
+    infomation[1].innerText = time1;
 }
 
 
+// 汽车列表下拉
 function xiala(open, a) {
     // console.log(open, a.children[1]);
     if (a.className == open) {
@@ -181,7 +177,7 @@ function getstyle(obj, name) {
         return getComputedStyle(obj, false)[name];
     }
 }
-
+// 过渡动画
 function startMove(obj, json, fnend) {
     clearInterval(obj.timer);
     obj.timer = setInterval(function () {
@@ -228,50 +224,38 @@ function startMove(obj, json, fnend) {
 
     }, 30); //obj.timer 每个对象都有自己定时器
 }
-
-
-
+// 坐标图片
 var image = [{
         // riding: './images/5e41539ba90eadf15c73237283914ec.png'
-        pic: './images/5e41539ba90eadf15c73237283914ec.png'
+        url: './images/5e41539ba90eadf15c73237283914ec.png',
+        // rotation: 90
     },
     {
         // havedata: './images/17f1bae155301168252cd83d890e842.png'
-        pic: './images/17f1bae155301168252cd83d890e842.png'
+        url: './images/17f1bae155301168252cd83d890e842.png'
     },
     {
         // icon: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
-        pic: './images/a8590e52095592eef526639279dc5fc.png'
+        url: './images/a8590e52095592eef526639279dc5fc.png'
         // parking: './images/a8590e52095592eef526639279dc5fc.png'
 
     },
     {
-        pic: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
-        // offline: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
+        url: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
+
     }
 ];
 
-// offline
-// url:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
-// This marker is 20 pixels wide by 32 pixels high.
-// size: new google.maps.Size(20, 20),
-// // The origin for this image is (0, 0).
-// origin: new google.maps.Point(0, 0),
-// // The anchor for this image is the base of the flagpole at (0, 32).
-// anchor: new google.maps.Point(0, 32)
 
-
-
-
-// 毫秒转换
+// 秒转换
 function formatDuring(mss) {
     // var days = parseInt(mss / (1000 * 60 * 60 * 24));
     var hours = parseInt((mss % (60 * 60 * 24)) / (60 * 60));
-    hours = hours > 10 ? hours : '0' + hours;
+    hours = hours >= 10 ? hours : '0' + hours;
     var minutes = parseInt((mss % (60 * 60)) / (60));
-    minutes = minutes > 10 ? minutes : '0' + minutes;
+    minutes = minutes >= 10 ? minutes : '0' + minutes;
     var seconds = mss % (60);
-    seconds = seconds > 10 ? seconds : '0' + seconds;
+    seconds = seconds >= 10 ? seconds : '0' + seconds;
     return hours + ":" + minutes + ":" + seconds;
 }
 //重置回放、路线记录
@@ -282,23 +266,18 @@ function formatDuring(mss) {
 // }
 
 //重置点
-function setMapOnAll(map, arrs) {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map); //map为null则为清除点
+function setMapOnAll(map) {
+    for (let i in markers) {
+        markers[i].setMap(map)
     }
 };
 
 
-if (window.require) {
-    const shell = require('electron').shell;
-    function openLink(url) {
-        shell.openExternal(url);
-    }
-}
+
 
 // 获取车列表
 function carlist() {
-    this.lastDataCount = null;
+    // this.lastDataCount = null;
     $.ajax({
         url: serverURL + "/channels", //请求的url地址
         dataType: "json", //返回的格式为json
@@ -314,7 +293,8 @@ function carlist() {
         html = '';
         for (let i in cardatas) {
             html += `<li>
-            <p class="caritem" myid=${i} itemname=${cardatas[i].devid}>${cardatas[i].devid}</p>     </li>`
+                    <p class="caritem" myid=${i} itemname=${cardatas[i].devid}>${cardatas[i].devid}</p>
+            </li>`
         }
         $('#carlist').html(html);
         single0();
@@ -322,7 +302,6 @@ function carlist() {
         console.log(err)
     });
 }
-carlist();
 // clearInterval(dashload)
 // 总数据的定时器
 var dashload = setInterval(carlist, 10000);
@@ -354,22 +333,36 @@ function timegg(marker, infowindow) {
     data_recv.innerText = "-";
     data_rate.innerText = "-";
     data_delay.innerText = "-";
-    // var markername = marker.name
     data_pid_value1.innerText = eachname.devid
     var format_time = formatDuring(eachname.elapsed)
-    data_elapsed.innerText = format_time
+    data_elapsed.innerText = format_time;
     infomation.forEach = Array.prototype.forEach
     infomation.forEach((item, idx) => {
-        if (idx >= 2) {
-            item.innerText = '-'
+        if (idx > 1) {
+            item.innerText = '-';
         }
-
     })
-    var lat = ''
-    var long = ''
-    if (eachname.data) {
-        eachname.data.forEach(item => {
-            if (ordinal.indexOf(item[0]) > 0) {
+    change1(eachname.data);
+    for (let j in infowindow) {
+        infowindow[j].close();
+    }
+    var contentString =
+        '<div id="content">' +
+        '<div id="siteNotice">' +
+        eachname.devid +
+        '</div></div>';
+    infowindow[marker.key] = new google.maps.InfoWindow({
+        content: contentString
+    });
+    infowindow[marker.key].open(map, marker);
+}
+
+function change1(eachnamedata) {
+    var lat = '';
+    var long = '';
+    if (eachnamedata) {
+        eachnamedata.forEach(item => {
+            if (ordinal.indexOf(item[0]) > 1) {
                 var a = ordinal.indexOf(item[0]);
                 infomation[a].innerText = item[1]
             }
@@ -393,64 +386,24 @@ function timegg(marker, infowindow) {
             }
         })
     }
-
-    for (let j in infowindow) {
-        infowindow[j].close();
-    }
-    var contentString =
-        '<div id="content">' +
-        '<div id="siteNotice">' +
-        eachname.devid +
-        '</div></div>';
-
-    infowindow[marker.key] = new google.maps.InfoWindow({
-        content: contentString
-    });
-    infowindow[marker.key].open(map, marker);
 }
 // 点击某车辆，该车辆的信息一直更新
 function update1(name) {
-    console.log(name);
     data_pid_value0.innerText = '-';
     data_rate.innerText = "-";
     data_delay.innerText = "-";
-    var format_time = formatDuring(name.elapsed)
-    data_elapsed.innerText = format_time
+    // var format_time = formatDuring(name.elapsed)
+    // data_elapsed.innerText = format_time
     infomation.forEach = Array.prototype.forEach
     infomation.forEach((item, idx) => {
         if (idx >= 2) {
             item.innerText = '-'
         }
-
     })
-    var lat;
-    var long;
-    name.data.forEach(item => {
-        if (ordinal.indexOf(item[0]) > 0) {
-            var a = ordinal.indexOf(item[0]);
-            infomation[a].innerText = item[1]
-        }
-        if (item[0] == 10) {
-            lat = item[1]
-        }
-        if (item[0] == 11) {
-            long = item[1]
-        }
-        if (lat && long) {
-            data_recv.innerText = lat + '，' + long
-        }
-        if (item[0] == 268) {
-            data_pid_value0.innerText = item[1]
-        }
-        if (item[0] == 269) {
-            data_rate.innerText = item[1]
-        }
-        if (item[0] == 273) {
-            data_delay.innerText = item[1]
-        }
-
-    });
+    change1(name.data)
 }
+
+// 新添加的车放入汽车列表
 function single0() {
     for (let key in cardatas) {
         // var arrlen = Object.keys(cardatas).length;       
@@ -463,7 +416,8 @@ function single0() {
                         dataType: 'html'
                     })
                     .then(function (result) {
-                        var res = eval('(' + result + ')');
+                        // var res = eval('(' + result + ')');
+                        var res = JSON.parse(result)
                         let uluru = {}
                         for (let j = 0; j < res.data.length; j++) {
                             // console.log(brr[j][1])
@@ -477,59 +431,51 @@ function single0() {
                         if (res.stats.parked) {
                             var offline = res.stats.age.ping > DEVICE_OFFLINE_TIMEOUT
                             if (offline) {
-                                cardatas[key]['status'] = 3
-                                if (uluru.lat & uluru.lng) {
-                                    spliceMarker({
-                                        lat: uluru.lat,
-                                        lng: uluru.lng
-                                    }, map, key, image[3].pic)
-                                } else {
-                                    spliceMarker({
-                                        lat: 22.4271338,
-                                        lng: 114.2094371
-                                    }, map, key, image[3].pic)
-                                }
+                                create1(key, 3, 3, uluru)
 
                             } else if (!offline) {
-                                cardatas[key]['status'] = 2
-                                if (uluru.lat & uluru.lng) {
-                                    spliceMarker({
-                                        lat: uluru.lat,
-                                        lng: uluru.lng
-                                    }, map, key, image[2].pic)
-                                } else {
-                                    spliceMarker({
-                                        lat: 22.4271338,
-                                        lng: 114.2094371
-                                    }, map, key, image[2].pic)
-                                }
+                                create1(key, 2, 2, uluru)
                             }
                         } else if (!res.stats.parked) {
-                            if (uluru.lat && uluru.lng) {
-                                cardatas[key]['status'] = 0;
-                                spliceMarker({
-                                    lat: uluru.lat,
-                                    lng: uluru.lng
-                                }, map, key, image[0].pic)
-                            } else {
-                                cardatas[key]['status'] = 1
-                                spliceMarker({
-                                    lat: 22.4271338,
-                                    lng: 114.2094371
-                                }, map, key, image[1].pic)
-                            }
+                            create1(key, 0, 1, uluru)
+
                         }
                         cardatas[key].data = res.data
                         cardatas[key].elapsed = res.stats.elapsed;
                         states(cardatas[key]);
                     });
             }
-        }(key))
-
-
+        })(key)
     }
+    // console.log(cardatas);
+}
+;
 
+function rotateMarker(selector, degree) {
+    console.log( $('img[src="./images/0de4da971bdb1236ea9a346dbd13fd1.png#' + selector + '"]')); 
+    // $('img[src="./images/0de4da971bdb1236ea9a346dbd13fd1.png#' + selector + '"]').css({
+    //     'transform': 'rotate(' + degree + 'deg)'
+    //     // "height":'50px'
 
+    // });
+}
+function create1(key, num1, num2, uluru) {
+    if (uluru.lat & uluru.lng) {  
+        image[num1].url+="#"+cardatas[key].devid;
+        rotateMarker(cardatas[key].devid, 10); 
+        cardatas[key]['status'] = num1
+        spliceMarker({
+            lat: uluru.lat,
+            lng: uluru.lng
+        }, map, key, image[num1]);
+       
+    } else {
+        cardatas[key]['status'] = num2
+        spliceMarker({
+            lat: 22.4271338,
+            lng: 114.2094371
+        }, map, key, image[num2])
+    }
 }
 
 function judgement(carid, number) {
@@ -537,10 +483,34 @@ function judgement(carid, number) {
     spliceMarker({
         lat: markers[carid].position.lat(),
         lng: markers[carid].position.lng()
-    }, map, carid, image[number].pic)
+    }, map, carid, image[number])
     cardatas[carid].status = number
 }
 
+// 0=riding;
+// 1=havedata;
+// 2=parking;
+// 3=offline
+function states(car) {
+    if (car.status == 0 || car.status == 1) {
+        clearTimeout(dingshi0)
+        dingshi0 = setTimeout(() => {
+            single1(car)
+        }, 2000)
+    } else if (car.status == 2) {
+        clearTimeout(dingshi2)
+        dingshi2 = setTimeout(() => {
+            // console.log(2)   
+            single1(car)
+        }, 5000)
+    } else if (car.status == 3) {
+        clearTimeout(dingshi3)
+        dinshiqi3 = setTimeout(() => {
+            // console.log(3)
+            single1(car);
+        }, 30000);
+    }
+}
 
 function single1(car) {
     $.ajax({
@@ -550,7 +520,7 @@ function single1(car) {
             dataType: 'html'
         })
         .then(function (result) {
-            var res = eval('(' + result + ')');
+            var res = JSON.parse(result);
             let uluru = {}
             for (let j = 0; j < res.data.length; j++) {
                 if (res.data[j][0] == 10) {
@@ -571,16 +541,17 @@ function single1(car) {
                         judgement(car.devid, 2)
                     }
                 }
+                cardatas[car.devid].parked = 1;
             } else if (!res.stats.parked) {
                 if (uluru.lat && uluru.lng) {
-                    if (cardatas[car.devid].status != 0) {      
+                    if (cardatas[car.devid].status != 0) {
                         judgement(car.devid, 0)
-                    } else if (Math.abs(markers[car.devid].position.lat() - uluru.lat) > 0.001 || Math.abs(markers[car.devid].position.lng() - uluru.lng) > 0.001) {            
+                    } else if (Math.abs(markers[car.devid].position.lat() - uluru.lat) > 0.0001 || Math.abs(markers[car.devid].position.lng() - uluru.lng) > 0.0001) {
                         markers[car.devid].setMap(null)
                         spliceMarker({
                             lat: uluru.lat,
                             lng: uluru.lng
-                        }, map, car.devid, image[0].pic)
+                        }, map, car.devid, image[0])
                     }
                 } else {
                     if (cardatas[car.devid].status != 1) {
@@ -588,7 +559,14 @@ function single1(car) {
                     }
                 }
                 cardatas[car.devid].data = res.data
-                cardatas[car.devid].elapsed = res.stats.elapsed;
+                cardatas[car.devid].parked = 0;
+                // console.log('new' + res.stats.elapsed);
+                if (cardatas[car.devid].old_elapsed && cardatas[car.devid].old_elapsed < res.stats.elapsed) {
+                    cardatas[car.devid].nowelapsed = res.stats.elapsed;
+                } else if (!cardatas[car.devid].old_elapsed) {
+                    cardatas[car.devid].old_elapsed = res.stats.elapsed;
+                    cardatas[car.devid].elapsed = res.stats.elapsed;
+                }
             }
             if (data_pid_value1.innerText == car.devid) {
                 update1(car)
@@ -597,30 +575,26 @@ function single1(car) {
         });
 }
 
-// 0=rideing;
-// 1=havedata;
-// 2=parking;
-// 3=offline
-function states(car) {
-    if (car.status == 0 || car.status == 1) {
-        // clearTimeout(dingshi0)
-        dingshi0 = setTimeout(() => {
-            single1(car)
-        }, 2000)
-    } else if (car.status == 2) {
-        // clearTimeout(dingshi2)
-        dingshi2 = setTimeout(() => {
-            // console.log(2)   
-            single1(car)
-        }, 5000)
-    } else if (car.status == 3) {
-        // clearTimeout(dingshi3)
-        dinshiqi3 = setTimeout(() => {
-            // console.log(3)
-            single1(car);
-        }, 30000);
+// 校正时间
+var Timestamp = setInterval(function () {
+    for (let key in cardatas) {
+        if (!cardatas[key].parked) {
+            // console.log(cardatas[key].old_elapsed,cardatas[key].nowelapsed);      
+            if (cardatas[key].old_elapsed < cardatas[key].nowelapsed) {
+                cardatas[key].old_elapsed = cardatas[key].nowelapsed
+                cardatas[key].elapsed = cardatas[key].nowelapsed
+            } else {
+                cardatas[key].elapsed = cardatas[key].elapsed + 1
+            }
+        }
+        if (data_pid_value1.innerText == cardatas[key].devid) {
+            var format_time = formatDuring(cardatas[key].elapsed)
+            data_elapsed.innerText = format_time
+        }
     }
-}
+}, 1000)
+
+
 
 
 var DASH = {
