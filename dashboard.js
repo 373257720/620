@@ -28,10 +28,9 @@ var map = new google.maps.Map(document.getElementById('map'), {
 });
 carlist();
 setMapOnAll(null);
-
-
-
-var ordinal = [17, 16, 287, 14, 260, 261, 266, 350, 272, 289, 305, 307, 36]
+// var ordinal = [17, 16, 287, 14, 260, 261, 266, 350, 272, 289, 305, 307, 36]
+var ordinal=[17,16,287,14,260,261,15,12,270,32,36]
+var ordinal=[]
 var column = [
     'China Date',
     'China Time',
@@ -39,12 +38,16 @@ var column = [
     'Course (degree)', //0xe-14
     'Engine load', //0x104-260
     'Engine coolant temperature', //105-261
-    'Fuel pressure', //0x10a-266
-    'Engine fuel rate', //0x15e-350
-    'MAF air flow rate', //0x110-272
-    'Distance traveled with malfunction indicator lamp', //0x121-289
-    'Distance traveled since codes cleared', //0x131-305
-    'Barometric pressure', //0x133-307
+    'Number of satellites in use',//0xF 
+    // 'Fuel pressure', //0x10a-266
+    'Altitude (m)',//0xC 
+    // 'Engine fuel rate', //0x15e-350
+    // 'MAF air flow rate', //0x110-272
+    // 'Distance traveled with malfunction indicator lamp', //0x121-289
+    // 'Distance traveled since codes cleared', //0x131-305
+    'Timing advance',  //0x10e
+    // 'Barometric pressure', //0x133-307
+    'Accelerometer data (x:y:z)',//0x20 
     'Battery voltage (in 0.01V)', //0x24-36
 ];
 
@@ -66,7 +69,6 @@ var data_delay = document.getElementById('data_delay');
 var data_pid_value0 = document.getElementById('data_pid_value0');
 var carlists = document.getElementById('carlist')
 var shoufengqin = document.getElementsByClassName('open')[0]
-
 document.getElementsByClassName('open')[0].nextElementSibling.style.height = "0px"
 shoufengqin.onclick = function () {
     xiala('open', document.getElementsByClassName('open')[0])
@@ -226,23 +228,16 @@ function startMove(obj, json, fnend) {
 }
 // 坐标图片
 var image = [{
-        // riding: './images/5e41539ba90eadf15c73237283914ec.png'
-        url: './images/5e41539ba90eadf15c73237283914ec.png',
-        // rotation: 90
+        url: './images/10ae17a67295ba9fda383e7f28fafa0.png',
     },
     {
-        // havedata: './images/17f1bae155301168252cd83d890e842.png'
-        url: './images/17f1bae155301168252cd83d890e842.png'
+        url: './images/d035900196c27754147c8e5a380e6ae.png'
     },
     {
-        // icon: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
-        url: './images/a8590e52095592eef526639279dc5fc.png'
-        // parking: './images/a8590e52095592eef526639279dc5fc.png'
-
+        url: './images/3a97dc98460fca4892a4bee89b55814.png'
     },
     {
-        url: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
-
+        url: './images/023eeb6158ddcc440ac74b78fc9350a.png',    
     }
 ];
 
@@ -313,9 +308,10 @@ function spliceMarker(location, map, idx, img) {
         'draggable': false,
         map: map,
         icon: img,
-        key: idx
+        key: idx,
+        
     });
-    markers[idx] = marker
+    markers[idx] = marker;
     for (let i in markers) {
         infowindow[i] = new google.maps.InfoWindow({
             content: ''
@@ -448,27 +444,21 @@ function single0() {
         })(key)
     }
     // console.log(cardatas);
-}
-;
+};
 
-function rotateMarker(selector, degree) {
-    console.log( $('img[src="./images/0de4da971bdb1236ea9a346dbd13fd1.png#' + selector + '"]')); 
-    // $('img[src="./images/0de4da971bdb1236ea9a346dbd13fd1.png#' + selector + '"]').css({
-    //     'transform': 'rotate(' + degree + 'deg)'
-    //     // "height":'50px'
 
-    // });
-}
-function create1(key, num1, num2, uluru) {
-    if (uluru.lat & uluru.lng) {  
-        image[num1].url+="#"+cardatas[key].devid;
-        rotateMarker(cardatas[key].devid, 10); 
-        cardatas[key]['status'] = num1
+
+// google.maps.event.addDomListener(window, 'load', initMap)
+function create1(key, num1, num2, uluru) {  
+    if (uluru.lat & uluru.lng) {
+        // var p = image[num1].url;
+        // p += "#" + cardatas[key].devid;
+        cardatas[key]['status'] = num1;
         spliceMarker({
             lat: uluru.lat,
             lng: uluru.lng
         }, map, key, image[num1]);
-       
+        // rotateMarker(cardatas[key].devid, 90);
     } else {
         cardatas[key]['status'] = num2
         spliceMarker({
