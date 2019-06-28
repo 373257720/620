@@ -6,6 +6,9 @@ body {
     color: #454545;
     overflow: hidden;
 }
+/* html{
+    height: 100%;
+} */
 html, body, ul, li, ol, dl, dd, dt, p, h1, h2, h3, h4, h5, h6, form, fieldset, legend, img,input{ margin:0; padding:0; }
 *{ margin:0; padding:0; list-style:none; border:0;}
 body {
@@ -35,13 +38,13 @@ textarea,
 }
 
 .gauge {
-    width: 240px;
-    height: 160px;
+    width: 2.4rem;
+    height: 1.6rem;
     float: left
 }
 
 .grid {
-    width:1200px;
+    width:12rem;
     text-align: center;
     overflow: hidden;
     margin-left: auto;
@@ -51,12 +54,12 @@ textarea,
 }
 
 .sidebar {
-    width: 250px;
+    width: 2.5rem;
     float: left;
     font-size: medium;
     border-style: solid;
     border-color: #AAA;
-    border-width: 1px;
+    border-width: 0.01rem;
     /* border-left: 0; */
     background-color: #c3c3c3;
     height: 100%;
@@ -77,28 +80,24 @@ textarea,
     font-weight: bold;
 }
 
-/* .sidebarcontent {
-    margin-left: 10px;
-    margin-top: 10px;
-} */
 .subline {
-    font-size: 10px;
-    height: 22px;
-    line-height: 22px;
+    font-size: 0.1rem;
+    height:0.22rem;
+    line-height: 0.22rem;
 }
 
 .state_offline {
-    font-size: 10px;
+    font-size: 0.1rem;
     color: red;
 }
 
 .state_parked {
-    font-size: 10px;
+    font-size: 0.1rem;
     color: yellow;
 }
 
 .state_running {
-    font-size: 10px;
+    font-size: 0.1rem;
     color: lightgreen;
 }
 
@@ -112,107 +111,95 @@ li {
 
 div.clear {
     clear: both;
-    height: 15px;
+    height: 0.15rem;
     background: #c3c3c3;
  
 }
-
-/* .banner { background-repeat:no-repeat; background-size: cover; background-position:center; width:100%; height:330px; background-image:url(dashboard/banner.jpg)} */
-.block {
-    float: left;
-    height: 56px;
-    background-image: url(dashboard/block.png);
-    background-repeat: no-repeat;
-    cursor: help;
-}
-
 .block_generic {
-    width: 80px;
-    margin-top: 5px;
+    width: 0.8rem;
+    margin-top: 0.05rem;
     text-align: center
 }
 
 .block2x {
     float: left;
-    height: 56px;
-    background-image: url(./images/2x.fw.png);
-    background-repeat: no-repeat;
+    height: 0.56rem;
+    background: #e9e9e9;
+    border: 1px solid #c3c3c3;
     cursor: help;
 }
 .block25x {
     float: left;
-    height: 56px;
-    background-image: url(./images/3x.png);
-    background-repeat: no-repeat;
+    height: 0.56rem;
+    background: #e9e9e9;
+    border: 1px solid #c3c3c3;
     cursor: help;
 }
 .block25x_generic {
-    width: 300px;
-    /* margin-top: 5px; */
-    margin-left: 1px
+    width: 3rem;
+    /* margin-left: 0.01rem */
 }
 
 .block2x_generic {
-    width: 155px;
-    /* margin-top: 5px; */
-    margin-left: 1px
+    width: 1.55rem;
+    /* margin-left: 0.01rem */
 }
 
 .block_channel {
     font-size: x-large;
-    margin-top: 10px
+    margin-top: 0.1rem
 }
 
 /* .block_id {
-    font-size: 12px;
-    line-height: 20px;
-    margin-top: 8px
+    font-size: 0.12rem;
+    line-height: 0.2rem;
+    margin-top: 0.08rem
 } */
 
 .block_number {
-    /* margin-top: 10px; */
+    /* margin-top: 0.1rem; */
     font-size: large;
-    height: 34px;
-    line-height: 34px;
+    height: 0.34rem;
+    line-height: 0.34rem;
 }
 
 .vbar {
     float: left;
-    height: 56px;
+    height: 0.56rem;
     background-image: url(dashboard/vbar.png);
     background-repeat: no-repeat;
     cursor: help
 }
 
 .vbar_info {
-    width: 76px;
-    margin-top: 2px;
-    margin-left: 5px;
+    width: 0.76rem;
+    margin-top: 0.02rem;
+    margin-left: 0.05rem;
     text-align: left;
-    line-height: 8px;
-    font-size: 8px
+    line-height: 0.08rem;
+    font-size: 0.08rem
 }
 
 .hbar {
     float: left;
-    height: 56px;
+    height: 0.56rem;
     background-image: url(dashboard/hbar.png);
     background-repeat: no-repeat;
     cursor: help;
 }
 
 .hbar_info {
-    width: 55px;
-    margin-top: 2px;
-    margin-left: 100px;
+    width: 0.55rem;
+    margin-top: 0.02rem;
+    margin-left: 1rem;
     text-align: center;
-    line-height: 14px;
-    font-size: 10px
+    line-height: 0.14rem;
+    font-size: 0.1rem
 }
 
 .hbar_number {
-    margin-top: 12px;
-    margin-bottom: 5px;
+    margin-top: 0.12rem;
+    margin-bottom: 0.05rem;
     text-align: center;
     font-size: medium
 }
@@ -224,12 +211,12 @@ div.clear {
     border-top-style: solid;
     border-bottom-style: solid;
     border-color: #AAA;
-    border-width: 1px
+    border-width: 0.01rem
 }
 
 .list {
     width: 100%;
-    height: 80px;
+    height: 0.8rem;
     overflow: hidden;
     background: #c3c3c3;
 }
@@ -243,53 +230,53 @@ div.clear {
 }
 
 .logo {
-    /* margin-left: 10px; */
-    margin-top: 25px;
-    width: 150px;
-    height: 50px;
+    /* margin-left: 62.5px; */
+    margin-top: 0.25rem;
+    width: 1.5rem;
+    height: 0.5rem;
 }
 #siteNotice{
     color:#999
 }
 #logo {
-    height: 100px;
+    height: 1rem;
     background: #e9e9e9;
-    /* margin-bottom: 20px; */
+    /* margin-bottom: 0.2rem; */
 }
 
 /* #tools{
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 190px;
-    height:550px;
+    width: 1.9rem;
+    height:5.5rem;
     
 } */
 .infomation{
-    font-size: 25px
+    font-size: 0.25rem
 }
 #tools li {
-    /* height: 80px; */
+    /* height: 500px; */
     text-align: left;
-    padding: 5px 10px;
+    padding: 0.05rem 0.1rem;
 }
 .open{
-    height: 50px;  
-    line-height: 50px;
+    height: 0.5rem;  
+    line-height: 0.5rem;
     text-align: left;
-    padding: 0 10px; 
+    padding: 0 0.1rem; 
     display: flex;
     font-size: medium;
     align-items: center;
     background: 0;
     cursor: pointer;
     justify-content: space-between;
-    border-bottom: 2px solid #e9e9e9;
-    /* background:url(./images/button.png) no-repeat 10px; */
+    border-bottom: 0.02rem solid #e9e9e9;
+    /* background:url(./images/button.png) no-repeat 0.1rem; */
 }
 .open img{
     /* float:right; */
-    height: 10px;
-    width:10px;
+    height: 0.1rem;
+    width:0.1rem;
 }
 .open span{
     cursor: pointer;
@@ -303,16 +290,16 @@ div.clear {
 }
 #carlist{
     background: #e9e9e9;
-     border-bottom: 2px solid #e9e9e9;
-        /* height: 200px; */
+     border-bottom: 0.02rem solid #e9e9e9;
+        /* height: 2rem; */
 }
 #carlist .caritem{
     text-align: left;
-    padding:5px 10px;
-    font-size: 14px;
+    padding:0.05rem 0.1rem;
+    font-size: 0.14rem;
 }
 
 #carlist .caritem:hover{
     background: #c3c3c3;
-    /* font-size: 14px; */
+    /* font-size: 0.14rem; */
 }

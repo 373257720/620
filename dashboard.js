@@ -16,6 +16,19 @@
 
 // var map;
 onResize();
+function onResize() {
+    var height = window.innerHeight - document.getElementById("list").offsetHeight - 8;
+    // console.log(height, document.getElementById("list").offsetHeight);
+    console.log(window.innerHeight,document.getElementById("list").offsetHeight);
+    // var width = window.innerWidth - document.getElementById("sidebar").offsetWidth - 2;
+//    console.log(width,document.getElementById("sidebar").offsetWidth);
+    //if (mapHeight < 300) mapHeight = 300;
+    document.getElementById("container").style.height = height+"px";
+    // document.getElementById("map").style.height = height/100+"rem";
+    // document.getElementById("map").style.width = width+'px';
+    // document.getElementById("chart").style.height = height / 3 + "px";
+    // document.getElementById("chart").style.width = width+ "px";
+}
 // 地图初始化
 var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 11,
@@ -29,34 +42,32 @@ var map = new google.maps.Map(document.getElementById('map'), {
 carlist();
 setMapOnAll(null);
 // var ordinal = [17, 16, 287, 14, 260, 261, 266, 350, 272, 289, 305, 307, 36]
-var ordinal=[17,16,287,14,260,261,15,12,270,32,36]
-var ordinal=[]
+var ordinal=[17,16,271,14,130,260,261,15,12,270,32,36]
 var column = [
     'China Date',
     'China Time',
-    'Run time since engine start', //0x11f-287
+    // 'Run time since engine start', //0x11f-287
+   ' Intake air temperature',//10f-271
     'Course (degree)', //0xe-14
+    'CPU temperature (in 0.1 Celsius degree)',//0x82-130
     'Engine load', //0x104-260
     'Engine coolant temperature', //105-261
-    'Number of satellites in use',//0xF 
+    'Number of satellites in use',//0xF -15
     // 'Fuel pressure', //0x10a-266
-    'Altitude (m)',//0xC 
+    'Altitude (m)',//0xC-12
     // 'Engine fuel rate', //0x15e-350
     // 'MAF air flow rate', //0x110-272
     // 'Distance traveled with malfunction indicator lamp', //0x121-289
     // 'Distance traveled since codes cleared', //0x131-305
-    'Timing advance',  //0x10e
+    'Timing advance',  //0x10e-270
     // 'Barometric pressure', //0x133-307
-    'Accelerometer data (x:y:z)',//0x20 
+    'Accelerometer data (x:y:z)',//0x20-32 
     'Battery voltage (in 0.01V)', //0x24-36
 ];
 
 
 var markers = {}; //坐标
 var infowindow = {}; //信息墙   
-// lineView = [],
-// routerLog = []; //记录点清除点
-// var driveLog = [];
 var cardatas = {}; //channels数据
 var dingshi0 = null; //汽车在开的定时器
 var dingshi2 = null; //parked的定时器
@@ -69,7 +80,7 @@ var data_delay = document.getElementById('data_delay');
 var data_pid_value0 = document.getElementById('data_pid_value0');
 var carlists = document.getElementById('carlist')
 var shoufengqin = document.getElementsByClassName('open')[0]
-document.getElementsByClassName('open')[0].nextElementSibling.style.height = "0px"
+document.getElementsByClassName('open')[0].nextElementSibling.style.height = '0px';
 shoufengqin.onclick = function () {
     xiala('open', document.getElementsByClassName('open')[0])
 }
@@ -79,16 +90,7 @@ carlists.onclick = function (e) {
     }
 }
 
-function onResize() {
-    var height = window.innerHeight - document.getElementById("list").offsetHeight - 8;
-    var width = window.innerWidth - document.getElementById("sidebar").offsetWidth - 2;
-    //if (mapHeight < 300) mapHeight = 300;
-    document.getElementById("container").style.height = height + "px";
-    document.getElementById("map").style.height = height + "px";
-    document.getElementById("map").style.width = width + "px";
-    // document.getElementById("chart").style.height = height / 3 + "px";
-    // document.getElementById("chart").style.width = width+ "px";
-}
+
 if (window.require) {
     const shell = require('electron').shell;
 
@@ -152,9 +154,10 @@ function NowTime1() {
 function xiala(open, a) {
     // console.log(open, a.children[1]);
     if (a.className == open) {
-        var he = a.nextElementSibling.children[0].offsetHeight;
+        var he = a.nextElementSibling.children[0].offsetHeight;        
         var he1 = getstyle(a.nextElementSibling, 'height');
-        if (he1 == '0px') {
+        console.log(he,he1);
+        if (he1 =='0px') {
             startMove(a.nextElementSibling, {
                 'height': he
             })
@@ -211,7 +214,7 @@ function startMove(obj, json, fnend) {
             //     obj.style.transform=
             // }
             else {
-                obj.style[key] = cur + speed + 'px';
+                obj.style[key] = (cur + speed)/100+ 'rem';
             }
 
 
@@ -617,7 +620,7 @@ var DASH = {
         if (temp > 80) temp = 80;
         var i = Math.floor((temp / 80) * 45) * 34;
         var img = document.getElementById("data_" + name);
-        img.style.marginLeft = (-i) + "px";
+        img.style.marginLeft = (-i)/100 + "rem";
         img.title = temp + "C";
     },
     // togglePID: function (num) {
