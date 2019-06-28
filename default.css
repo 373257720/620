@@ -1,10 +1,12 @@
 body {
     font-family: Tahoma, Geneva, sans-serif;
-    font-size: medium;
+    font-size: 16px;
     margin: 0;
     background-color: #c3c3c3;
     color: #454545;
     overflow: hidden;
+    position: relative;
+    
 }
 /* html{
     height: 100%;
@@ -19,7 +21,7 @@ body {
    /* background: #000 ; */
    color: #454545;
    /* background-color: #c3c3c3; */
-   font-size: large;
+   /* font-size: large; */
    text-align: center
 }
 :not(input):not(textarea),
@@ -38,28 +40,27 @@ textarea,
 }
 
 .gauge {
-    width: 2.4rem;
-    height: 1.6rem;
+    width: 240px;
+    height: 160px;
     float: left
 }
 
 .grid {
-    width:12rem;
+    width:1060px;
     text-align: center;
     overflow: hidden;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: small;
+    margin: 0 auto;
+    font-size: 10px;
     /* background: #c3c3c3; */
 }
 
 .sidebar {
-    width: 2.5rem;
+    width: 250px;
     float: left;
-    font-size: medium;
+    font-size: 16px;
     border-style: solid;
     border-color: #AAA;
-    border-width: 0.01rem;
+    border-width: 1px;
     /* border-left: 0; */
     background-color: #c3c3c3;
     height: 100%;
@@ -81,23 +82,23 @@ textarea,
 }
 
 .subline {
-    font-size: 0.1rem;
-    height:0.22rem;
-    line-height: 0.22rem;
+    font-size: 10px;
+    height:22px;
+    line-height: 22px;
 }
 
 .state_offline {
-    font-size: 0.1rem;
+    font-size: 10px;
     color: red;
 }
 
 .state_parked {
-    font-size: 0.1rem;
+    font-size: 10px;
     color: yellow;
 }
 
 .state_running {
-    font-size: 0.1rem;
+    font-size: 10px;
     color: lightgreen;
 }
 
@@ -111,114 +112,120 @@ li {
 
 div.clear {
     clear: both;
-    height: 0.15rem;
+    height: 15px;
     background: #c3c3c3;
  
 }
 .block_generic {
-    width: 0.8rem;
-    margin-top: 0.05rem;
+    width: 80px;
+    margin-top: 5px;
+    height:56px;
     text-align: center
 }
 
 .block2x {
     float: left;
-    height: 0.56rem;
+    height: 56px;
     background: #e9e9e9;
-    border: 1px solid #c3c3c3;
+    border-left: 1px solid #c3c3c3;
     cursor: help;
 }
 .block25x {
     float: left;
-    height: 0.56rem;
+    height: 56px;
     background: #e9e9e9;
-    border: 1px solid #c3c3c3;
+    border-left: 1px solid #c3c3c3;
     cursor: help;
 }
 .block25x_generic {
-    width: 3rem;
-    /* margin-left: 0.01rem */
+    width: 270px;
+    height: 56px;
+    /* margin-left: 1.0016px */
 }
 
 .block2x_generic {
-    width: 1.55rem;
-    /* margin-left: 0.01rem */
+    width: 155px;
+    height: 56px;
+    /* margin-left: 1.0016px */
 }
 
 .block_channel {
-    font-size: x-large;
-    margin-top: 0.1rem
+    font-size: 16px;
+    margin-top: 10px
 }
 
 /* .block_id {
-    font-size: 0.12rem;
-    line-height: 0.2rem;
-    margin-top: 0.08rem
+    font-size: 12px;
+    line-height: 20px;
+    margin-top: 8px
 } */
 
 .block_number {
-    /* margin-top: 0.1rem; */
-    font-size: large;
-    height: 0.34rem;
-    line-height: 0.34rem;
+    /* margin-top: 10px; */
+    font-size: 16px;
+    height: 34px;
+    line-height: 34px;
 }
 
 .vbar {
     float: left;
-    height: 0.56rem;
+    height: 56px;
     background-image: url(dashboard/vbar.png);
     background-repeat: no-repeat;
     cursor: help
 }
 
 .vbar_info {
-    width: 0.76rem;
-    margin-top: 0.02rem;
-    margin-left: 0.05rem;
+    width: 76px;
+    margin-top: 2px;
+    margin-left: 5px;
     text-align: left;
-    line-height: 0.08rem;
-    font-size: 0.08rem
+    line-height: 8px;
+    font-size: 8px
 }
 
 .hbar {
     float: left;
-    height: 0.56rem;
+    height: 56px;
     background-image: url(dashboard/hbar.png);
     background-repeat: no-repeat;
     cursor: help;
 }
 
 .hbar_info {
-    width: 0.55rem;
-    margin-top: 0.02rem;
-    margin-left: 1rem;
+    width: 55px;
+    margin-top: 2px;
+    margin-left: 100px;
     text-align: center;
-    line-height: 0.14rem;
-    font-size: 0.1rem
+    line-height: 14px;
+    font-size: 10px
 }
 
 .hbar_number {
-    margin-top: 0.12rem;
-    margin-bottom: 0.05rem;
+    margin-top: 12px;
+    margin-bottom: 5px;
     text-align: center;
-    font-size: medium
+    font-size: 16px;
 }
 
 .map {
-    width: 50%;
-    float: left;
+    /* width: 50%; */
+    /* float: left; */
+    /* width: 100%; */
     border-right-style: solid;
     border-top-style: solid;
     border-bottom-style: solid;
     border-color: #AAA;
-    border-width: 0.01rem
+    border-width: 1px;
 }
 
-.list {
+.list{
     width: 100%;
-    height: 0.8rem;
+    height: 88px;
     overflow: hidden;
     background: #c3c3c3;
+    /* position: absolute;
+    bottom: 0; */
 }
 
 .container {
@@ -230,56 +237,63 @@ div.clear {
 }
 
 .logo {
-    /* margin-left: 62.5px; */
-    margin-top: 0.25rem;
-    width: 1.5rem;
-    height: 0.5rem;
+
+    margin-top: 25px;
+    width: 150px;
+    height: 50px;
 }
 #siteNotice{
     color:#999
 }
 #logo {
-    height: 1rem;
+    height: 100px;
     background: #e9e9e9;
-    /* margin-bottom: 0.2rem; */
+    /* margin-bottom: 20px; */
 }
 
 /* #tools{
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 1.9rem;
-    height:5.5rem;
+    width: 190px;
+    height:550px;
     
 } */
 .infomation{
-    font-size: 0.25rem
+    font-size: 25px
 }
 #tools li {
-    /* height: 500px; */
+
     text-align: left;
-    padding: 0.05rem 0.1rem;
+    padding: 5px 10px;
 }
 .open{
-    height: 0.5rem;  
-    line-height: 0.5rem;
+    height: 50px;  
+    line-height: 50px;
     text-align: left;
-    padding: 0 0.1rem; 
+    padding: 0 10px; 
     display: flex;
-    font-size: medium;
+    font-size: 16px;
     align-items: center;
     background: 0;
     cursor: pointer;
     justify-content: space-between;
-    border-bottom: 0.02rem solid #e9e9e9;
-    /* background:url(./images/button.png) no-repeat 0.1rem; */
+    border-bottom: 2px solid #e9e9e9;
+    /* background:url(./images/button.png) no-repeat 10px; */
 }
+
+
 .open img{
     /* float:right; */
-    height: 0.1rem;
-    width:0.1rem;
+    height: 10px;
+    width:10px;
 }
 .open span{
+    display: inline-block;
     cursor: pointer;
+    height: 50px; 
+    font-size: 16px;
+    line-height: 50px;
+
 }
 /* #shoufengqin{
     cursor: pointer;
@@ -290,16 +304,16 @@ div.clear {
 }
 #carlist{
     background: #e9e9e9;
-     border-bottom: 0.02rem solid #e9e9e9;
-        /* height: 2rem; */
+     border-bottom: 2px solid #e9e9e9;
+        /* height: 200px; */
 }
 #carlist .caritem{
     text-align: left;
-    padding:0.05rem 0.1rem;
-    font-size: 0.14rem;
+    padding:5px 10px;
+    font-size: 14px;
 }
 
 #carlist .caritem:hover{
     background: #c3c3c3;
-    /* font-size: 0.14rem; */
+
 }

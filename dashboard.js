@@ -17,15 +17,15 @@
 // var map;
 onResize();
 function onResize() {
-    var height = window.innerHeight - document.getElementById("list").offsetHeight - 8;
-    // console.log(height, document.getElementById("list").offsetHeight);
+    var height = window.innerHeight - document.getElementById("list").offsetHeight;
     console.log(window.innerHeight,document.getElementById("list").offsetHeight);
-    // var width = window.innerWidth - document.getElementById("sidebar").offsetWidth - 2;
-//    console.log(width,document.getElementById("sidebar").offsetWidth);
+    var width = window.innerWidth - document.getElementById("sidebar").offsetWidth-2;
     //if (mapHeight < 300) mapHeight = 300;
-    document.getElementById("container").style.height = height+"px";
-    // document.getElementById("map").style.height = height/100+"rem";
+    document.getElementById("container").style.height = height+'px';
+    document.getElementById("map").style.height = height+'px';
     // document.getElementById("map").style.width = width+'px';
+    // document.getElementById("map").style.height = 100%;
+    // document.getElementById("map").style.width = '100%';
     // document.getElementById("chart").style.height = height / 3 + "px";
     // document.getElementById("chart").style.width = width+ "px";
 }
@@ -47,11 +47,11 @@ var column = [
     'China Date',
     'China Time',
     // 'Run time since engine start', //0x11f-287
-   ' Intake air temperature',//10f-271
+   ' Intake air temperature</br>(Celsius degree)',//10f-271
     'Course (degree)', //0xe-14
-    'CPU temperature (in 0.1 Celsius degree)',//0x82-130
-    'Engine load', //0x104-260
-    'Engine coolant temperature', //105-261
+    'CPU temperature</br>(Celsius degree)',//0x82-130
+    'Engine load(%)', //0x104-260
+    'Engine coolant temperature<br>(Celsius degree)', //105-261
     'Number of satellites in use',//0xF -15
     // 'Fuel pressure', //0x10a-266
     'Altitude (m)',//0xC-12
@@ -156,7 +156,6 @@ function xiala(open, a) {
     if (a.className == open) {
         var he = a.nextElementSibling.children[0].offsetHeight;        
         var he1 = getstyle(a.nextElementSibling, 'height');
-        console.log(he,he1);
         if (he1 =='0px') {
             startMove(a.nextElementSibling, {
                 'height': he
@@ -214,7 +213,7 @@ function startMove(obj, json, fnend) {
             //     obj.style.transform=
             // }
             else {
-                obj.style[key] = (cur + speed)/100+ 'rem';
+                obj.style[key] = (cur + speed)+ 'px';
             }
 
 
