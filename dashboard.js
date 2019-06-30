@@ -374,7 +374,7 @@ function change1(eachnamedata) {
                 long = item[1]
             }
             if (lat && long) {
-                data_recv.innerText = lat + '，' + long
+                data_recv.innerText = lat + ',' + long
             }
             if (item[0] == 268) {
                 data_pid_value0.innerText = item[1]
