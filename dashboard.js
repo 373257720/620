@@ -16,6 +16,19 @@
 
 // var map;
 onResize();
+function onResize() {
+    var height = window.innerHeight - document.getElementById("list").offsetHeight;
+    console.log(window.innerHeight,document.getElementById("list").offsetHeight);
+    var width = window.innerWidth - document.getElementById("sidebar").offsetWidth-2;
+    //if (mapHeight < 300) mapHeight = 300;
+    document.getElementById("container").style.height = height+'px';
+    document.getElementById("map").style.height = height+'px';
+    // document.getElementById("map").style.width = width+'px';
+    // document.getElementById("map").style.height = 100%;
+    // document.getElementById("map").style.width = '100%';
+    // document.getElementById("chart").style.height = height / 3 + "px";
+    // document.getElementById("chart").style.width = width+ "px";
+}
 // 地图初始化
 var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 11,
@@ -28,32 +41,33 @@ var map = new google.maps.Map(document.getElementById('map'), {
 });
 carlist();
 setMapOnAll(null);
-
-
-
-var ordinal = [17, 16, 287, 14, 260, 261, 266, 350, 272, 289, 305, 307, 36]
+// var ordinal = [17, 16, 287, 14, 260, 261, 266, 350, 272, 289, 305, 307, 36]
+var ordinal=[17,16,271,14,130,260,261,15,12,270,32,36]
 var column = [
     'China Date',
     'China Time',
-    'Run time since engine start', //0x11f-287
+    // 'Run time since engine start', //0x11f-287
+   ' Intake air temperature</br>(Celsius degree)',//10f-271
     'Course (degree)', //0xe-14
-    'Engine load', //0x104-260
-    'Engine coolant temperature', //105-261
-    'Fuel pressure', //0x10a-266
-    'Engine fuel rate', //0x15e-350
-    'MAF air flow rate', //0x110-272
-    'Distance traveled with malfunction indicator lamp', //0x121-289
-    'Distance traveled since codes cleared', //0x131-305
-    'Barometric pressure', //0x133-307
+    'CPU temperature</br>(Celsius degree)',//0x82-130
+    'Engine load(%)', //0x104-260
+    'Engine coolant temperature<br>(Celsius degree)', //105-261
+    'Number of satellites in use',//0xF -15
+    // 'Fuel pressure', //0x10a-266
+    'Altitude (m)',//0xC-12
+    // 'Engine fuel rate', //0x15e-350
+    // 'MAF air flow rate', //0x110-272
+    // 'Distance traveled with malfunction indicator lamp', //0x121-289
+    // 'Distance traveled since codes cleared', //0x131-305
+    'Timing advance',  //0x10e-270
+    // 'Barometric pressure', //0x133-307
+    'Accelerometer data (x:y:z)',//0x20-32 
     'Battery voltage (in 0.01V)', //0x24-36
 ];
 
 
 var markers = {}; //坐标
 var infowindow = {}; //信息墙   
-// lineView = [],
-// routerLog = []; //记录点清除点
-// var driveLog = [];
 var cardatas = {}; //channels数据
 var dingshi0 = null; //汽车在开的定时器
 var dingshi2 = null; //parked的定时器
@@ -66,8 +80,7 @@ var data_delay = document.getElementById('data_delay');
 var data_pid_value0 = document.getElementById('data_pid_value0');
 var carlists = document.getElementById('carlist')
 var shoufengqin = document.getElementsByClassName('open')[0]
-
-document.getElementsByClassName('open')[0].nextElementSibling.style.height = "0px"
+document.getElementsByClassName('open')[0].nextElementSibling.style.height = '0px';
 shoufengqin.onclick = function () {
     xiala('open', document.getElementsByClassName('open')[0])
 }
@@ -77,16 +90,7 @@ carlists.onclick = function (e) {
     }
 }
 
-function onResize() {
-    var height = window.innerHeight - document.getElementById("list").offsetHeight - 8;
-    var width = window.innerWidth - document.getElementById("sidebar").offsetWidth - 2;
-    //if (mapHeight < 300) mapHeight = 300;
-    document.getElementById("container").style.height = height + "px";
-    document.getElementById("map").style.height = height + "px";
-    document.getElementById("map").style.width = width + "px";
-    // document.getElementById("chart").style.height = height / 3 + "px";
-    // document.getElementById("chart").style.width = width+ "px";
-}
+
 if (window.require) {
     const shell = require('electron').shell;
 
@@ -150,9 +154,9 @@ function NowTime1() {
 function xiala(open, a) {
     // console.log(open, a.children[1]);
     if (a.className == open) {
-        var he = a.nextElementSibling.children[0].offsetHeight;
+        var he = a.nextElementSibling.children[0].offsetHeight;        
         var he1 = getstyle(a.nextElementSibling, 'height');
-        if (he1 == '0px') {
+        if (he1 =='0px') {
             startMove(a.nextElementSibling, {
                 'height': he
             })
@@ -209,7 +213,7 @@ function startMove(obj, json, fnend) {
             //     obj.style.transform=
             // }
             else {
-                obj.style[key] = cur + speed + 'px';
+                obj.style[key] = (cur + speed)+ 'px';
             }
 
 
@@ -225,25 +229,17 @@ function startMove(obj, json, fnend) {
     }, 30); //obj.timer 每个对象都有自己定时器
 }
 // 坐标图片
-var image = [
-    {
-        // riding: './images/5e41539ba90eadf15c73237283914ec.png'
-        url: './images/5e41539ba90eadf15c73237283914ec.png',
-        // rotation: 90
+var image = [{
+        url: './images/10ae17a67295ba9fda383e7f28fafa0.png',
     },
     {
-        // havedata: './images/17f1bae155301168252cd83d890e842.png'
-        url: './images/17f1bae155301168252cd83d890e842.png'
+        url: './images/d035900196c27754147c8e5a380e6ae.png'
     },
     {
-        // icon: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
-        url: './images/a8590e52095592eef526639279dc5fc.png'
-        // parking: './images/a8590e52095592eef526639279dc5fc.png'
-
+        url: './images/3a97dc98460fca4892a4bee89b55814.png'
     },
     {
-        url: './images/0de4da971bdb1236ea9a346dbd13fd1.png',
-
+        url: './images/023eeb6158ddcc440ac74b78fc9350a.png',    
     }
 ];
 
@@ -315,10 +311,10 @@ function spliceMarker(location, map, idx, img) {
         'draggable': false,
         map: map,
         icon: img,
-        key: idx
+        key: idx,
+        
     });
     markers[idx] = marker;
-    // console.log($('img[src="./images/0de4da971bdb1236ea9a346dbd13fd1.png]').length);
     for (let i in markers) {
         infowindow[i] = new google.maps.InfoWindow({
             content: ''
@@ -331,6 +327,7 @@ function spliceMarker(location, map, idx, img) {
 }
 // function update()
 function timegg(marker, infowindow) {
+    // console.log(cardatas[marker.key])    
     var eachname = cardatas[marker.key]
     data_pid_value1.innerText = "-";
     data_pid_value0.innerText = '-';
@@ -454,29 +451,19 @@ function single0() {
     // console.log(cardatas);
 };
 
-function rotateMarker(selector, degree) {
-    setTimeout(() => {
-    console.log($('img[src="./images/0de4da971bdb1236ea9a346dbd13fd1.png#' + selector + '"]'));
-    $('img[src="./images/0de4da971bdb1236ea9a346dbd13fd1.png#' + selector + '"]').css({
-        'transform': 'rotate(' + degree + 'deg)'
-    });
-    }, 0)
-}
 
-function create1(key, num1, num2, uluru) {
+
+// google.maps.event.addDomListener(window, 'load', initMap)
+function create1(key, num1, num2, uluru) {  
     if (uluru.lat & uluru.lng) {
-        console.log(cardatas[key].devid);
-        var pop= image[num1].url;
-        pop =pop+ "#" + cardatas[key].devid;
-        console.log(pop)
+        // var p = image[num1].url;
+        // p += "#" + cardatas[key].devid;
         cardatas[key]['status'] = num1;
-        ( async function () {
-            await spliceMarker({
-                lat: uluru.lat,
-                lng: uluru.lng
-            }, map, key, pop);
-        rotateMarker(cardatas[key].devid, 90);
-        })()
+        spliceMarker({
+            lat: uluru.lat,
+            lng: uluru.lng
+        }, map, key, image[num1]);
+        // rotateMarker(cardatas[key].devid, 90);
     } else {
         cardatas[key]['status'] = num2
         spliceMarker({
@@ -635,7 +622,7 @@ var DASH = {
         if (temp > 80) temp = 80;
         var i = Math.floor((temp / 80) * 45) * 34;
         var img = document.getElementById("data_" + name);
-        img.style.marginLeft = (-i) + "px";
+        img.style.marginLeft = (-i)/100 + "rem";
         img.title = temp + "C";
     },
     // togglePID: function (num) {
